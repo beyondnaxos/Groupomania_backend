@@ -18,11 +18,11 @@ app.use(express.urlencoded({ extend: true }))
 // simple route
 app.get("/", (req, res) => {
     res.json({ message: "Salut" })
-    
-  })
+})
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080
+require('./routes/tutorial.routes.js')(app)
 app.listen(PORT, () => {
     console.log(` Le serveur est en écoute sur le port ${PORT}.`)
 })
@@ -32,3 +32,4 @@ const db = require('./models')
 db.sequelize.sync({ force: true }).then(() => {
     console.log("Drop and re-sync db.")
   })
+
