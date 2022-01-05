@@ -9,6 +9,28 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+// -------------------------------------------------
+// test helmet
+const helmet = require('helmet');
+app.use(helmet());
+// -------------------------------------------------
+// -------------------------------------------------
+// test rate limit etc 
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 0.1 * 60 * 1000,
+    max: 100 
+  })
+app.use(limiter)
+// -------------------------------------------------
+// -------------------------------------------------
+// test user routes  
+const userRoutes = require('./routes/user') 
+app.use('/api/auth', userRoutes) 
+// -------------------------------------------------
+
+
+
 // prise en charge du JSON
 app.use(express.json())
 
@@ -17,7 +39,7 @@ app.use(express.urlencoded({ extend: true }))
 
 // simple route
 app.get("/", (req, res) => {
-    res.json({ message: "Salut" })
+    res.json({ message: "Mon appli est fonctionelle" })
 })
 
 // set port, listen for requests
