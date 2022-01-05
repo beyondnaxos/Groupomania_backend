@@ -1,5 +1,5 @@
 const cryptoJS = require('crypto-js')
-require('dotenv').config()
+
 
 // encryption email
 module.exports = (req, res, next) => {

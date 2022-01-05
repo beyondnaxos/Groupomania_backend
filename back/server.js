@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+require('dotenv').config()
 
 const app = express()
 
@@ -26,7 +27,7 @@ app.use(limiter)
 // -------------------------------------------------
 // test user routes  
 const userRoutes = require('./routes/user') 
-app.use('/api/auth', userRoutes) 
+
 // -------------------------------------------------
 
 
@@ -317,3 +318,5 @@ console.log(">> All tutorials", JSON.stringify(tutorials, null, 2));
     console.log("Drop and re-sync db.");
     run();
   });
+
+  app.use('/api/auth', userRoutes) 
