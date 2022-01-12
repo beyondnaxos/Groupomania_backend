@@ -3,6 +3,7 @@ const Tutorial = db.tutorials
 const Op = db.Sequelize.Op
 const Comment = db.comments
 
+
 // Create and Save a new Tutorial
 exports.create = (req, res ) => {
   // Validate request
