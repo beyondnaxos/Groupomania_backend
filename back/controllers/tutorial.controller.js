@@ -3,20 +3,19 @@ const Tutorial = db.tutorials
 const Op = db.Sequelize.Op
 const Comment = db.comments
 
-
 // Create and Save a new Tutorial
 exports.create = (req, res ) => {
   // Validate request
-  if (!req.body.title) {
-    res.status(400).send({
-      message: "LE contenu ne peut être vide"
-    })
-    return
-  }
+  // if (!req.body.title) {
+  //   res.status(400).send({
+  //     message: "LE contenu ne peut être vide"
+  //   })
+  //   return
+  // }
 
   // Create a Tutorial
   const tutorial = {
-    title: req.body.title,
+    // title: req.body.title,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
   };

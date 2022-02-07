@@ -10,7 +10,17 @@ const corsOptions = {
   origin: "http://localhost:3000",
 };
 
+
+
 app.use(cors(corsOptions));
+
+
+// app.post("/signup", (req, res, next) => {
+//   const email = req.body.email
+//   const password = req.body.password
+// })
+
+
 
 // -------------------------------------------------
 // test helmet
@@ -35,6 +45,7 @@ const userRoutes = require("./routes/user");
 // prise en charge du JSON
 app.use(express.json());
 
+
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extend: true }));
 
@@ -49,6 +60,9 @@ require("./routes/tutorial.routes.js")(app);
 app.listen(PORT, () => {
   console.log(` Le serveur est en écoute sur le port ${PORT}.`);
 });
+
+
+
 
 const db = require("./models");
 
