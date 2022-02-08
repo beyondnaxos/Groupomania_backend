@@ -1,20 +1,22 @@
 const db = require('./../models')
 const Tutorial = db.tutorials
 const Op = db.Sequelize.Op
+const Comment = db.comments
 
 // Create and Save a new Tutorial
 exports.create = (req, res ) => {
   // Validate request
-  if (!req.body.title) {
-    res.status(400).send({
-      message: "LE contenu ne peut être vide"
-    })
-    return
-  }
+  // if (!req.body.title) {
+  //   res.status(400).send({
+  //     message: "LE contenu ne peut être vide"
+  //   })
+  //   return
+  // }
 
   // Create a Tutorial
   const tutorial = {
-    title: req.body.title,
+    userId : req.body.userId,
+    token : req.body.token,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
   };
@@ -152,4 +154,62 @@ exports.findAllPublished = (req, res) => {
       });
   };
 
+  //-------------------------------------------------
 
+  exports.createTutorial = (tutorial) => {
+    return Tutorial.create({
+      title: tutorial.title,
+      description: tutorial.description,
+    })
+      .then((tutorial) => {
+        console.log(">> Created tutorial: " + JSON.stringify(tutorial, null, 4));
+        return tutorial;
+      })
+      .catch((err) => {
+        console.log(">> Error while creating tutorial: ", err);
+      });
+  };
+
+
+  exports.createComment = (tutorialId, comment) => {
+    return Comment.create({
+      name: comment.name,
+      text: comment.text,
+      tutorialId: tutorialId,
+    })
+      .then((comment) => {
+        console.log(">> Created comment: " + JSON.stringify(comment, null, 4));
+        return comment;
+      })
+      .catch((err) => {
+        console.log(">> Error while creating comment: ", err);
+      });
+  };
+
+  exports.findTutorialById = (tutorialId) => {
+    return Tutorial.findByPk(tutorialId, { include: ["comments"] })
+      .then((tutorial) => {
+        return tutorial;
+      })
+      .catch((err) => {
+        console.log(">> Error while finding tutorial: ", err);
+      });
+  };
+
+  exports.findCommentById = (id) => {
+    return Comment.findByPk(id, { include: ["tutorial"] })
+      .then((comment) => {
+        return comment;
+      })
+      .catch((err) => {
+        console.log(">> Error while finding comment: ", err);
+      });
+  };
+
+  exports.findAll = () => {
+    return Tutorial.findAll({
+      include: ["comments"],
+    }).then((tutorials) => {
+      return tutorials;
+    });
+  };
