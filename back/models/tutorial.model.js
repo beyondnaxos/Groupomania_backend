@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: Sequelize.STRING
       },
-      token: {
+      imageUrl: {
         type: Sequelize.STRING
       },
       description: {

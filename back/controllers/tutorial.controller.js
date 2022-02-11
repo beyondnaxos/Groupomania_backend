@@ -14,15 +14,18 @@ exports.create = (req, res ) => {
   // }
 
   // Create a Tutorial
+console.log(req.body)
+
   const tutorial = {
     userId : req.body.userId,
-    token : req.body.token,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
   };
 
   // Save Tutorial in the database
   Tutorial.create(tutorial)
+
     .then(data => {
       res.send(data)
     })

@@ -15,11 +15,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-// app.post("/signup", (req, res, next) => {
-//   const email = req.body.email
-//   const password = req.body.password
-// })
-
 
 
 // -------------------------------------------------
@@ -326,10 +321,10 @@ const controller = require("./controllers/tutorial.controller");
 // */
 // };
 
-// db.sequelize.sync();
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-  // run();
-});
+db.sequelize.sync();
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+//   // run();
+// });
 
 app.use("/api/auth", userRoutes);
