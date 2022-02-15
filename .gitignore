@@ -2,5 +2,10 @@
 * text=auto
 node_modules 
 # exclude everything
-images/*
 
+
+*.png
+
+
+# exception to the rule
+!images/.gitkeep 
