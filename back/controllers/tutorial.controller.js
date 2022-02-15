@@ -5,6 +5,15 @@ const Comment = db.comments
 
 // Create and Save a new Tutorial
 exports.create = (req, res ) => {
+  // Validate request
+  // if (!req.body.title) {
+  //   res.status(400).send({
+  //     message: "LE contenu ne peut être vide"
+  //   })
+  //   return
+  // }
+
+  // Create a Tutorial
 console.log(req.body)
 
   const tutorial = {
@@ -31,12 +40,10 @@ console.log(req.body)
 
 // retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-
-    const userId = req.body.userId
-    // const title = req.query.title;
-    // let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
+    const title = req.query.title;
+    let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
   
-    Tutorial.findAll({ where: userId })
+    Tutorial.findAll({ where: condition })
       .then(data => {
         res.send(data)
       })
