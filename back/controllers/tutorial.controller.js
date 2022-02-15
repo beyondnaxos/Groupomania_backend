@@ -27,6 +27,7 @@ console.log(req.body)
   Tutorial.create(tutorial)
 
     .then(data => {
+      
       res.send(data)
     })
     .catch(err => {
@@ -43,7 +44,7 @@ exports.findAll = (req, res) => {
     const title = req.query.title;
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
   
-    Tutorial.findAll({ where: condition })
+    Tutorial.findAll({  where: condition })
       .then(data => {
         res.send(data)
       })
