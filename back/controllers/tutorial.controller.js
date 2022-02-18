@@ -193,10 +193,23 @@ exports.deleteAll = (req, res) => {
  
 // Find all published Tutorials 
 exports.findAllPublished = (req, res) => {
-    Tutorial.findAll({ where: { published: true } })
-      .then(data => {
-        res.send(data);
+    Tutorial.findAll({ raw: true, where: { published: true } })
+      .then(tutos => {
+        Comment.findAll().then(comments => {
+        const tutosWithComments = tutos.map(tuto => {
+        console.log(tuto)
+        tuto.comments = [];
+        comments.forEach(comment => {
+          if(comment.tutorialId === tuto.id) {
+            tuto.comments.push(comment);
+          }
+        })
+        return tuto;
       })
+      //console.log(tutosWithComments);
+        res.send(tutosWithComments);
+      })
+    })
       .catch(err => {
         res.status(500).send({
           message:
