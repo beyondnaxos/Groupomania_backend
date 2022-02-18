@@ -3,17 +3,7 @@ const Tutorial = db.tutorials
 const Op = db.Sequelize.Op
 const Comment = db.comments
 
-// Create and Save a new Tutorial
 exports.create = (req, res ) => {
-  // Validate request
-  // if (!req.body.title) {
-  //   res.status(400).send({
-  //     message: "LE contenu ne peut être vide"
-  //   })
-  //   return
-  // }
-
-  // Create a Tutorial
 console.log(req.body)
 
   const tutorial = {
@@ -38,6 +28,63 @@ console.log(req.body)
     })
 }
 
+
+// exports.likeAndDislike = (req, res) => {
+//   // récupère l'user id
+//   let userId = req.body.userId
+//   // récupère sauce id
+//   let postId = req.params.id
+//   // récupère 'like' dans le corps de requête
+//   let like = req.body.like
+
+//   // si l'utilisateur aime le post incrémente le nombre de likes
+//   if (like === 1) {
+//       Tutorial.update(
+//           //push de l'user id et du like dans un tableau
+//           { _id: postId }, { $push: { usersLiked: userId }, $inc: { likes: +1 } }
+//       )
+//           .then(() => res.status(200).json({ message: 'like added' }))
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+
+//   // si l'utilisateur n'aime pas le post incrémente le nombre de dislikes
+//   if (like === -1) {
+//       Tutorial.update(
+//           // push de l'user id et du dilike dans un tableau
+//           { _id: postId }, { $push: { usersDisliked: userId }, $inc: { dislikes: +1 } }
+//       )
+//           .then(() => res.status(200).json({ message: 'diskike added' }))
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+
+//   // Retrait du like dislike de l'utilisateur
+//   if (like === 0) {
+//       Tutorial.findOne({
+//           _id: postId,
+//       })
+//           .then((tutorial) => {
+//               // retire le like si l'utilisateur à déjà like le post
+//               if (tutorial.usersLiked.includes(userId)) {
+//                   Tutorial.update(
+//                       //pull de l'user id et du like du tableau 
+//                       { _id: postId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } }
+//                   )
+//                       .then(() => res.status(200).json({ message: 'like removed' }))
+//                       .catch((error) => res.status(400).json({ error }))
+//               }
+//               // retire le dislike si l'utilisateur à déjà dislike le post
+//               if (tutorial.usersDisliked.includes(userId)) {
+//                   Tutorial.update(
+//               //pull de l'user id et du dislike du tableau 
+//                       { _id: postId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } }
+//                   )
+//                       .then(() => res.status(200).json({ message: 'dislike removed' }))
+//                       .catch((error) => res.status(400).json({ error }))
+//               }
+//           })
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+// }
 
 // retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {

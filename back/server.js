@@ -5,14 +5,22 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-
-const corsOptions = {
-  origin: "http://localhost:3000",
-};
+const path = require('path') 
 
 
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+ 
+// };
 
-app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*') 
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization') 
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS') 
+  next() 
+}) 
+
+// app.use(cors(corsOptions));
 
 
 
@@ -20,7 +28,7 @@ app.use(cors(corsOptions));
 // -------------------------------------------------
 // test helmet
 const helmet = require("helmet");
-app.use(helmet());
+app.use(helmet.frameguard())
 // -------------------------------------------------
 // -------------------------------------------------
 // test rate limit etc
@@ -326,5 +334,6 @@ db.sequelize.sync();
 //   console.log("Drop and re-sync db.");
 //   // run();
 // });
+app.use('/images', express.static(path.join(__dirname, 'images'))) 
 
 app.use("/api/auth", userRoutes);
