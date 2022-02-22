@@ -235,15 +235,18 @@ exports.findAllPublished = (req, res) => {
   };
 
 
-  exports.createComment = (tutorialId, comment) => {
-    return Comment.create({
-      name: comment.name,
-      text: comment.text,
-      tutorialId: tutorialId,
-    })
-      .then((comment) => {
-        console.log(">> Created comment: " + JSON.stringify(comment, null, 4));
-        return comment;
+  exports.createComment = (req, res) => {
+
+    const comment = {
+      name: req.body.name,
+      text: req.body.text,
+      tutorialId: req.body.tutorialId,
+    };
+
+    Comment.create(comment)
+      .then((data) => {
+        console.log(">> Created comment: " + JSON.stringify(data, null, 4));
+        res.send(data);
       })
       .catch((err) => {
         console.log(">> Error while creating comment: ", err);

@@ -11,6 +11,9 @@ module.exports = app => {
   // Create a new Tutorial
   router.post("/",auth, multer, tutorials.create);
 
+  // Create Comment 
+  router.post("/:tutorialId/comment", tutorials.createComment);
+  
   // Retrieve all Tutorials
   router.get("/",auth, multer, tutorials.findAll);
 

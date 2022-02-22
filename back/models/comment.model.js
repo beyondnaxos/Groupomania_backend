@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       text: {
         type: DataTypes.STRING
+      },
+      tutorialId: {
+        type: DataTypes.INTEGER
       }
     });
   
