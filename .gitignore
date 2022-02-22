@@ -5,7 +5,7 @@ node_modules
 
 
 *.png
-
+*.jpg
 
 # exception to the rule
 !images/.gitkeep 
