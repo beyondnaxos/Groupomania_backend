@@ -16,9 +16,11 @@ console.log(req.body)
   // Save Tutorial in the database
   Tutorial.create(tutorial)
 
-    .then(data => {
-      
-      res.send(data)
+    .then(response => {
+      const post = response.get({ plain: true })
+      post.comments=[]
+      console.log(post)
+      res.send(post)
     })
     .catch(err => {
       res.status(500).send({
@@ -245,22 +247,22 @@ exports.findAllPublished = (req, res) => {
 
     Comment.create(comment)
       .then((data) => {
-        console.log(">> Created comment: " + JSON.stringify(data, null, 4));
-        res.send(data);
+        console.log(">> Created comment: " + JSON.stringify(data, null, 4))
+        res.send(data)
       })
       .catch((err) => {
-        console.log(">> Error while creating comment: ", err);
-      });
+        console.log(">> Error while creating comment: ", err)
+      })
   };
 
   exports.findTutorialById = (tutorialId) => {
     return Tutorial.findByPk(tutorialId, { include: ["comments"] })
       .then((tutorial) => {
-        return tutorial;
+        return tutorial
       })
       .catch((err) => {
-        console.log(">> Error while finding tutorial: ", err);
-      });
+        console.log(">> Error while finding tutorial: ", err)
+      })
   };
 
   exports.findCommentById = (id) => {
