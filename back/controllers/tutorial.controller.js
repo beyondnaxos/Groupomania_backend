@@ -153,28 +153,30 @@ exports.update = (req, res) => {
 
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
- const id = req.params.id
+  const id = req.params.id
 
- Tutorial.destroy({
-        where: { id: id }
- })
- .then(num => {
-     if (num == 1 ) {
-         res.send({
-                message: "Tutoriel supprimé avec succès"
-         })
-     }else {
-         res.send ({
-                message: `Aucun tutoriel trouvé avec l'id ${id}`
-         })
-     }
- })
- .catch(err => {
-     res.status(500).send({
-            message: "Impossible de supprimer le tutoriel avec l'id " + id
+     Tutorial.destroy({
+         where: { id: id}
+     })  
+     .then(num => {
+       
+         if (num == 1) {
+             res.send({
+                 message: "Tutoriel supprimé avec succès"
+             })  
+         } else {
+             res.send({
+                 message: `Aucun tutoriel trouvé avec l'id ${id}`
+             })
+         }
      })
- })
-}
+     .catch(err => {
+         res.status(500).send({
+             message: "Erreur lors de la suppression du tutoriel avec l'id " + id
+         })
+     })
+   
+ }
 
 // Delete all Tutorials from the database
 exports.deleteAll = (req, res) => {
