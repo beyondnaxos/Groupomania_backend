@@ -7,7 +7,7 @@ exports.create = (req, res ) => {
 console.log(req.body)
 
   const tutorial = {
-    userId : req.body.userId,
+    userId : req.auth.userId,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
@@ -68,7 +68,7 @@ console.log(req.body)
 //               // retire le like si l'utilisateur à déjà like le post
 //               if (tutorial.usersLiked.includes(userId)) {
 //                   Tutorial.update(
-//                       //pull de l'user id et du like du tableau 
+//                       //pull de l'user id et du like du tableau
 //                       { _id: postId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } }
 //                   )
 //                       .then(() => res.status(200).json({ message: 'like removed' }))
@@ -77,7 +77,7 @@ console.log(req.body)
 //               // retire le dislike si l'utilisateur à déjà dislike le post
 //               if (tutorial.usersDisliked.includes(userId)) {
 //                   Tutorial.update(
-//               //pull de l'user id et du dislike du tableau 
+//               //pull de l'user id et du dislike du tableau
 //                       { _id: postId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } }
 //                   )
 //                       .then(() => res.status(200).json({ message: 'dislike removed' }))
@@ -92,7 +92,7 @@ console.log(req.body)
 exports.findAll = (req, res) => {
     const title = req.query.title;
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
-  
+
     Tutorial.findAll({  where: condition })
       .then(data => {
         res.send(data)
@@ -126,7 +126,7 @@ exports.findOne = (req, res) => {
     })
 }
 
-// Update a Tutorial by the id in the request 
+// Update a Tutorial by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id
 
@@ -154,28 +154,31 @@ exports.update = (req, res) => {
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id
-
-     Tutorial.destroy({
-         where: { id: id}
-     })  
-     .then(num => {
-       
-         if (num == 1) {
-             res.send({
-                 message: "Tutoriel supprimé avec succès"
-             })  
-         } else {
-             res.send({
-                 message: `Aucun tutoriel trouvé avec l'id ${id}`
+     Tutorial.findByPk(id).then(post => {
+         console.log(post)
+         if (post.userId === req.auth.userId) {
+             Tutorial.destroy({
+                 where: {id: id}
+             }).then(num => {
+                 if (num == 1) {
+                     res.send({
+                         message: "Tutoriel supprimé avec succès"
+                     })
+                 } else {
+                     res.send({
+                         message: `Aucun tutoriel trouvé avec l'id ${id}`
+                     })
+                 }
+             }).catch(err => {
+                 res.status(500).send({
+                     message: "Erreur lors de la suppression du tutoriel avec l'id " + id
+                 })
              })
+
          }
      })
-     .catch(err => {
-         res.status(500).send({
-             message: "Erreur lors de la suppression du tutoriel avec l'id " + id
-         })
-     })
-   
+
+
  }
 
 // Delete all Tutorials from the database
@@ -194,10 +197,10 @@ exports.deleteAll = (req, res) => {
         })
       })
   }
- 
-// Find all published Tutorials 
+
+// Find all published Tutorials
 exports.findAllPublished = (req, res) => {
-    Tutorial.findAll({ raw: true, where: { published: true } })
+    Tutorial.findAll({ raw: true, where: { published: true }, include: ['user'] })
       .then(tutos => {
         Comment.findAll().then(comments => {
         const tutosWithComments = tutos.map(tuto => {

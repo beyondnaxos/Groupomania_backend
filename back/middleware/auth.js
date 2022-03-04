@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken') 
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 
@@ -10,12 +10,12 @@ module.exports = (req, res, next) => {
 
     const decodedToken = jwt.verify(token, process.env.JWT_KEY)
     const userId = decodedToken.userId
-    
+
     req.auth = { userId }
     if (req.body.userId && req.body.userId !== userId ) {
       throw 'Invalid user ID'
     } else {
-      
+      console.log(req.auth)
       next()
     }
   } catch {
@@ -23,4 +23,4 @@ module.exports = (req, res, next) => {
       error: new Error('You are not authenticated')
     })
   }
-} 
+}

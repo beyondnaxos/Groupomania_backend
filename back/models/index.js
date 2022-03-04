@@ -28,4 +28,9 @@ db.comments.belongsTo(db.tutorials, {
   as: "tutorial",
 })
 
+db.users.hasMany(db.tutorials, { as: 'tutorials'})
+db.tutorials.belongsTo(db.users, {
+    foreignKey: 'userId',
+    as: 'user'
+})
 module.exports = db

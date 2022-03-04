@@ -1,8 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
     const Tutorial = sequelize.define("tutorial", {
-      userId: {
-        type: Sequelize.STRING
-      },
       imageUrl: {
         type: Sequelize.STRING,
         allowNull: true
@@ -27,6 +24,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.BOOLEAN
       }
     })
-  
+
     return Tutorial
   }
