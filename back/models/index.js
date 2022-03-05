@@ -1,5 +1,6 @@
 const dbConfig = require("../config/db.config.js")
-console.log(dbConfig)
+console.log('dbconfig' + dbConfig)
+
 const Sequelize = require("sequelize")
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
@@ -27,4 +28,9 @@ db.comments.belongsTo(db.tutorials, {
   as: "tutorial",
 })
 
+db.users.hasMany(db.tutorials, { as: 'tutorials'})
+db.tutorials.belongsTo(db.users, {
+    foreignKey: 'userId',
+    as: 'user'
+})
 module.exports = db

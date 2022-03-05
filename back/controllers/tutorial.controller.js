@@ -3,12 +3,12 @@ const Tutorial = db.tutorials
 const Op = db.Sequelize.Op
 const Comment = db.comments
 
-// Create and Save a new Tutorial
 exports.create = (req, res ) => {
 console.log(req.body)
 
   const tutorial = {
-    userId : req.body.userId,
+    userId : req.auth.userId,
+    name: req.body.name,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
@@ -17,8 +17,11 @@ console.log(req.body)
   // Save Tutorial in the database
   Tutorial.create(tutorial)
 
-    .then(data => {
-      res.send(data)
+    .then(response => {
+      const post = response.get({ plain: true })
+      post.comments=[]
+      console.log(post)
+      res.send(post)
     })
     .catch(err => {
       res.status(500).send({
@@ -29,14 +32,69 @@ console.log(req.body)
 }
 
 
+// exports.likeAndDislike = (req, res) => {
+//   // récupère l'user id
+//   let userId = req.body.userId
+//   // récupère sauce id
+//   let postId = req.params.id
+//   // récupère 'like' dans le corps de requête
+//   let like = req.body.like
+
+//   // si l'utilisateur aime le post incrémente le nombre de likes
+//   if (like === 1) {
+//       Tutorial.update(
+//           //push de l'user id et du like dans un tableau
+//           { _id: postId }, { $push: { usersLiked: userId }, $inc: { likes: +1 } }
+//       )
+//           .then(() => res.status(200).json({ message: 'like added' }))
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+
+//   // si l'utilisateur n'aime pas le post incrémente le nombre de dislikes
+//   if (like === -1) {
+//       Tutorial.update(
+//           // push de l'user id et du dilike dans un tableau
+//           { _id: postId }, { $push: { usersDisliked: userId }, $inc: { dislikes: +1 } }
+//       )
+//           .then(() => res.status(200).json({ message: 'diskike added' }))
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+
+//   // Retrait du like dislike de l'utilisateur
+//   if (like === 0) {
+//       Tutorial.findOne({
+//           _id: postId,
+//       })
+//           .then((tutorial) => {
+//               // retire le like si l'utilisateur à déjà like le post
+//               if (tutorial.usersLiked.includes(userId)) {
+//                   Tutorial.update(
+//                       //pull de l'user id et du like du tableau
+//                       { _id: postId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } }
+//                   )
+//                       .then(() => res.status(200).json({ message: 'like removed' }))
+//                       .catch((error) => res.status(400).json({ error }))
+//               }
+//               // retire le dislike si l'utilisateur à déjà dislike le post
+//               if (tutorial.usersDisliked.includes(userId)) {
+//                   Tutorial.update(
+//               //pull de l'user id et du dislike du tableau
+//                       { _id: postId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } }
+//                   )
+//                       .then(() => res.status(200).json({ message: 'dislike removed' }))
+//                       .catch((error) => res.status(400).json({ error }))
+//               }
+//           })
+//           .catch((error) => res.status(400).json({ error }))
+//   }
+// }
+
 // retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
+    const title = req.query.title;
+    let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
 
-    const userId = req.body.userId
-    // const title = req.query.title;
-    // let condition = title ? { title: { [Op.like]: `%${title}%` } } : null
-  
-    Tutorial.findAll({ where: userId })
+    Tutorial.findAll({  where: condition })
       .then(data => {
         res.send(data)
       })
@@ -69,7 +127,7 @@ exports.findOne = (req, res) => {
     })
 }
 
-// Update a Tutorial by the id in the request 
+// Update a Tutorial by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id
 
@@ -96,28 +154,32 @@ exports.update = (req, res) => {
 
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
- const id = req.params.id
+  const id = req.params.id
+     Tutorial.findByPk(id).then(post => {
+         if (post.userId === req.auth.userId) {
+             Tutorial.destroy({
+                 where: {id: id}
+             }).then(num => {
+                 if (num == 1) {
+                     res.send({
+                         message: "Tutoriel supprimé avec succès"
+                     })
+                 } else {
+                     res.send({
+                         message: `Aucun tutoriel trouvé avec l'id ${id}`
+                     })
+                 }
+             }).catch(err => {
+                 res.status(500).send({
+                     message: "Erreur lors de la suppression du tutoriel avec l'id " + id
+                 })
+             })
 
- Tutorial.destroy({
-        where: { id: id }
- })
- .then(num => {
-     if (num == 1 ) {
-         res.send({
-                message: "Tutoriel supprimé avec succès"
-         })
-     }else {
-         res.send ({
-                message: `Aucun tutoriel trouvé avec l'id ${id}`
-         })
-     }
- })
- .catch(err => {
-     res.status(500).send({
-            message: "Impossible de supprimer le tutoriel avec l'id " + id
+         }
      })
- })
-}
+
+
+ }
 
 // Delete all Tutorials from the database
 exports.deleteAll = (req, res) => {
@@ -135,13 +197,26 @@ exports.deleteAll = (req, res) => {
         })
       })
   }
- 
-// Find all published Tutorials 
+
+// Find all published Tutorials
 exports.findAllPublished = (req, res) => {
-    Tutorial.findAll({ where: { published: true } })
-      .then(data => {
-        res.send(data);
+    Tutorial.findAll({ raw: true, where: { published: true }, include: ['user'] })
+      .then(tutos => {
+        Comment.findAll().then(comments => {
+        const tutosWithComments = tutos.map(tuto => {
+        console.log(tuto)
+        tuto.comments = [];
+        comments.forEach(comment => {
+          if(comment.tutorialId === tuto.id) {
+            tuto.comments.push(comment);
+          }
+        })
+        return tuto;
       })
+      //console.log(tutosWithComments);
+        res.send(tutosWithComments);
+      })
+    })
       .catch(err => {
         res.status(500).send({
           message:
@@ -167,29 +242,32 @@ exports.findAllPublished = (req, res) => {
   };
 
 
-  exports.createComment = (tutorialId, comment) => {
-    return Comment.create({
-      name: comment.name,
-      text: comment.text,
-      tutorialId: tutorialId,
-    })
-      .then((comment) => {
-        console.log(">> Created comment: " + JSON.stringify(comment, null, 4));
-        return comment;
+  exports.createComment = (req, res) => {
+
+    const comment = {
+      name: req.body.name,
+      text: req.body.text,
+      tutorialId: req.body.tutorialId,
+    };
+
+    Comment.create(comment)
+      .then((data) => {
+        console.log(">> Created comment: " + JSON.stringify(data, null, 4))
+        res.send(data)
       })
       .catch((err) => {
-        console.log(">> Error while creating comment: ", err);
-      });
+        console.log(">> Error while creating comment: ", err)
+      })
   };
 
   exports.findTutorialById = (tutorialId) => {
     return Tutorial.findByPk(tutorialId, { include: ["comments"] })
       .then((tutorial) => {
-        return tutorial;
+        return tutorial
       })
       .catch((err) => {
-        console.log(">> Error while finding tutorial: ", err);
-      });
+        console.log(">> Error while finding tutorial: ", err)
+      })
   };
 
   exports.findCommentById = (id) => {
