@@ -74,10 +74,10 @@ const controller = require("./controllers/tutorial.controller");
 
 
 db.sequelize.sync();
- //db.sequelize.sync({ force: true }).then(() => {
- // console.log("Drop and re-sync db.");
- // run();
- //});
+//  db.sequelize.sync({ force: true }).then(() => {
+//  console.log("Drop and re-sync db.");
+//  run();
+//  });
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use("/api/auth", userRoutes);

@@ -8,6 +8,7 @@ console.log(req.body)
 
   const tutorial = {
     userId : req.auth.userId,
+    name: req.body.name,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
@@ -155,7 +156,6 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id
      Tutorial.findByPk(id).then(post => {
-         console.log(post)
          if (post.userId === req.auth.userId) {
              Tutorial.destroy({
                  where: {id: id}
