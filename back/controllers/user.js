@@ -26,7 +26,7 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-  User.findOne({ where : { email: req.email } })
+  User.findOne({ where: { email: req.email } })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' })
@@ -40,8 +40,10 @@ exports.login = (req, res, next) => {
             userId: user.id,
             isAdmin: user.isAdmin,
             token: jwt.sign(
-              { userId: user.id,
-                isAdmin: user.isAdmin },
+              {
+                userId: user.id,
+                isAdmin: user.isAdmin
+              },
               process.env.JWT_KEY,
               { expiresIn: '24h' }
             ),
@@ -53,4 +55,17 @@ exports.login = (req, res, next) => {
         .catch(error => res.status(500).json({ error }))
     })
     .catch(error => res.status(500).json({ error }))
+}
+
+exports.deleteUser = (req, res, next) => {
+
+  if (req.userId === req.params.id) {
+    User.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+      .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
+      .catch(error => res.status(400).json({ error }))
+  }
 }
