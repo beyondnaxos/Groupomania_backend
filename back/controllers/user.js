@@ -38,8 +38,10 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user.id,
+            isAdmin: user.isAdmin,
             token: jwt.sign(
-              { userId: user.id },
+              { userId: user.id,
+                isAdmin: user.isAdmin },
               process.env.JWT_KEY,
               { expiresIn: '24h' }
             ),
