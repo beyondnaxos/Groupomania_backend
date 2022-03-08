@@ -58,14 +58,14 @@ exports.login = (req, res, next) => {
 }
 
 exports.deleteUser = (req, res, next) => {
-
-  if (req.userId === req.params.id) {
+  const id = req.params.id
+  User.findByPk(id).then( () => {
     User.destroy({
-      where: {
-        id: req.params.id
-      }
+      where: { id: id }
     })
       .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
       .catch(error => res.status(400).json({ error }))
+    
+  })
   }
-}
+  

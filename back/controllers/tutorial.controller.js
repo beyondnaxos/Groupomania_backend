@@ -14,9 +14,10 @@ console.log(req.body)
     published: req.body.published ? req.body.published : false,
     isAdmin: req.body.isAdmin ? req.body.isAdmin : false
   };
+  
 
   // Save Tutorial in the database
-  Tutorial.create(tutorial)
+  Tutorial.create(tutorial )
 
     .then(response => {
       const post = response.get({ plain: true })
