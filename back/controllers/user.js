@@ -69,3 +69,11 @@ exports.deleteUser = (req, res, next) => {
   })
   }
   
+
+  exports.getAllUsers = (req, res, next) => {
+
+    User.findAll({ raw: true})
+      .then(users => res.status(200).json(users))
+      .catch(error => res.status(400).json({ error }))
+  }
+

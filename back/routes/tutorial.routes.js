@@ -32,5 +32,7 @@ module.exports = app => {
   // Delete all Tutorials
   router.delete("/", auth, tutorials.deleteAll);
 
+  router.delete("/:id/comment/:commentId", auth,  tutorials.deleteComment);
+
   app.use('/api/tutorials', router);
 };

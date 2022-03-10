@@ -158,7 +158,11 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id
      Tutorial.findByPk(id).then(post => {
-         if (post.userId === req.auth.userId || req.auth.isAdmin === true) {
+       console.log('clg de post ' , post);
+       console.log('clg de post.user ' , post.userId);  
+       console.log('clg de req.auth.userId ' , req.auth.userId);  
+       if (post.userId === req.auth.userId || req.auth.isAdmin === true) {
+
              Tutorial.destroy({
                  where: {id: id}
              }).then(num => {
@@ -261,6 +265,32 @@ exports.findAllPublished = (req, res) => {
         console.log(">> Error while creating comment: ", err)
       })
   };
+
+   exports.deleteComment = (req, res) => {
+    const id = req.params.id;
+    const commentId = req.params.commentId;
+    Comment.destroy({
+      where: { id: commentId , tutorialId: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Commentaire supprimé avec succès"
+          })
+        
+        } else {
+          res.send({
+            message: `Aucun commentaire trouvé avec l'id ${commentId}`
+          })
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Erreur lors de la suppression du commentaire avec l'id " + commentId
+        })
+      })
+  }
+
 
   exports.findTutorialById = (tutorialId) => {
     return Tutorial.findByPk(tutorialId, { include: ["comments"] })
