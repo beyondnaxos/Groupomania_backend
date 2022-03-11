@@ -9,7 +9,7 @@ console.log(req.body)
   const tutorial = {
     userId : req.auth.userId,
     name: req.body.name,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    imageUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
     description: req.body.description,
     published: req.body.published ? req.body.published : false,
     isAdmin: req.body.isAdmin ? req.body.isAdmin : false
@@ -254,8 +254,9 @@ exports.findAllPublished = (req, res) => {
       name: req.body.name,
       text: req.body.text,
       tutorialId: req.body.tutorialId,
+      userId : req.auth.userId
     };
-
+    console.log(comment);
     Comment.create(comment)
       .then((data) => {
         console.log(">> Created comment: " + JSON.stringify(data, null, 4))
@@ -269,8 +270,8 @@ exports.findAllPublished = (req, res) => {
    exports.deleteComment = (req, res) => {
     const id = req.params.id;
     const commentId = req.params.commentId;
-   
-    // if (req.auth.isAdmin === true) {
+    Comment.findByPk(commentId).then(comment => {
+    if ( req.auth.userId === comment.userId ||req.auth.isAdmin === true) {
     Comment.destroy({
       where: { id: commentId , tutorialId: id }
     })
@@ -291,7 +292,9 @@ exports.findAllPublished = (req, res) => {
           message: "Erreur lors de la suppression du commentaire avec l'id " + commentId
         })
       })
-    // }
+    }
+    })
+
   
   }
 
