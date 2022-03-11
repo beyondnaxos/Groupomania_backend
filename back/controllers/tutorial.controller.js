@@ -269,6 +269,8 @@ exports.findAllPublished = (req, res) => {
    exports.deleteComment = (req, res) => {
     const id = req.params.id;
     const commentId = req.params.commentId;
+   
+    // if (req.auth.isAdmin === true) {
     Comment.destroy({
       where: { id: commentId , tutorialId: id }
     })
@@ -289,6 +291,8 @@ exports.findAllPublished = (req, res) => {
           message: "Erreur lors de la suppression du commentaire avec l'id " + commentId
         })
       })
+    // }
+  
   }
 
 
