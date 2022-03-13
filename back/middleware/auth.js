@@ -9,7 +9,6 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_KEY)
     const userId = decodedToken.userId
     const isAdmin = decodedToken.isAdmin
-    const username = decodedToken.username
 
     req.auth = { userId, isAdmin }
     if (req.body.userId && req.body.userId !== userId ) {

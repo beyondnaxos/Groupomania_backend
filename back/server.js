@@ -1,11 +1,8 @@
-const express = require("express");
-
-const cors = require("cors");
-
-require("dotenv").config();
-
+const express = require("express")
 const app = express();
 const path = require('path')
+
+require("dotenv").config()
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -14,48 +11,37 @@ app.use((req, res, next) => {
   next()
 })
 
-// test helmet
-const helmet = require("helmet");
+const helmet = require("helmet")
 app.use(helmet.frameguard())
 
-// test rate limit etc
-const rateLimit = require("express-rate-limit");
+const rateLimit = require("express-rate-limit")
 const limiter = rateLimit({
   windowMs: 0.1 * 60 * 1000,
   max: 100,
 });
+
 app.use(limiter);
 
-// test user routes
 const userRoutes = require("./routes/user");
 
-// prise en charge du JSON
 app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended : true }));
 
-// set port, listen for requests
 const PORT = process.env.PORT || 8080;
 require("./routes/tutorial.routes.js")(app);
 app.listen(PORT, () => {
   console.log(` Le serveur est en écoute sur le port ${PORT}.`);
 });
 
-
-
-
 const db = require("./models");
 
-const controller = require("./controllers/tutorial.controller");
-
-
-
 db.sequelize.sync();
+
 //  db.sequelize.sync({ force: true }).then(() => {
 //  console.log("Drop and re-sync db.");
 // //  run();
 //  });
+
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use("/api/auth", userRoutes);
