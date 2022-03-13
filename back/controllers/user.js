@@ -49,7 +49,7 @@ exports.login = (req, res, next) => {
               { expiresIn: '24h' }
             ),
             username: user.username,
-            loggedIn: true
+            isLoggedIn: true
           }
           )
         })
