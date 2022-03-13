@@ -1,7 +1,16 @@
 # P7_test
 
----- INSTALLER LES DEPENDANCES ----
+# Getting Started with Backend Groupomania
 
-Ouvrir le terminal et installer les dépendances suivantes:
+Backend du projet Groupomania
 
-$ npm install express sequelize mysql2 cors --save
+## Available Scripts
+
+Clone this repo and run `cd back` then `npm install` to install the dependencies.
+
+### `cd back`
+### `npm install`
+
+In the project directory, you can run:
+
+### `nodemon server`
