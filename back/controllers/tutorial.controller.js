@@ -101,9 +101,9 @@ exports.delete = (req, res) => {
   const id = req.params.id
   Tutorial.findByPk(id).then(post => {
     console.log('clg de post ', post);
-
+   
     if (post.userId === req.auth.userId || req.auth.isAdmin === true) {
-
+     
       Tutorial.destroy({
         where: { id: id }
       }).then(num => {

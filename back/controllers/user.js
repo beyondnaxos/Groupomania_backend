@@ -20,7 +20,6 @@ exports.signup = (req, res, next) => {
     })
     .catch(error => {
       console.log(error)
-
       return res.status(500).json({ error })
     })
 }
@@ -70,7 +69,6 @@ exports.deleteUser = (req, res, next) => {
   })
   }
   
-
   exports.getAllUsers = (req, res, next) => {
 
     User.findAll({ raw: true})

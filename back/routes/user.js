@@ -5,6 +5,7 @@ const cryptEmail = require('../middleware/cryptEmail')
 const validPass = require('../middleware/validPass')
 const auth = require('../middleware/auth')
 
+
 // Create a new user
 router.post('/signup',validPass, cryptEmail, userCtrl.signup) 
 
