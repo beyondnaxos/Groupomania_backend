@@ -1,9 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 node_modules/
-
-# exclude everything
-
+/env
 
 *.png
 *.jpg
