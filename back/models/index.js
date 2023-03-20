@@ -2,6 +2,7 @@ const dbConfig = require("../config/db.config.js")
 console.log('dbconfig' + dbConfig)
 
 const Sequelize = require("sequelize")
+
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
@@ -21,7 +22,6 @@ db.sequelize = sequelize
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize)
 db.users = require("./user.js")(sequelize, Sequelize)
 db.comments = require("./comment.model.js")(sequelize, Sequelize)
-
 
 db.tutorials.hasMany(db.comments, { as: "comments" })
 

@@ -50,6 +50,7 @@ exports.findAll = (req, res) => {
     })
 }
 
+
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
   const id = req.params.id
